@@ -22,9 +22,9 @@ export default function Header() {
 
         {/* Logo */}
         <div className="flex items-center space-x-3">
-          <div className="relative w-12 h-12">
+          <div className="relative w-16 h-16">
             <Image
-              src="/compverse-logo.png"
+              src="/CompVerseLogo.png"
               alt="CompVerse Logo"
               fill
               className="object-contain"
