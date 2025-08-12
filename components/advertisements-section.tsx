@@ -22,7 +22,7 @@ const advertisements: Advertisement[] = [
     title: "Premium Sports Equipment",
     company: "SportsTech Pro",
     description: "Get 20% off on all sports equipment for CompVerse participants",
-    image: "/sports-equipment-ad.png",
+    image: "/sports-equipment-ad.jpg",
     link: "#",
     featured: true,
     category: "sponsor",
@@ -32,7 +32,7 @@ const advertisements: Advertisement[] = [
     title: "Educational Software Suite",
     company: "LearnMax Solutions",
     description: "Free 3-month trial of our award-winning learning platform",
-    image: "/educational-software-ad.png",
+    image: "/educational-software-ad.jpg",
     link: "#",
     featured: false,
     category: "partner",
@@ -42,7 +42,7 @@ const advertisements: Advertisement[] = [
     title: "Gaming Gear & Accessories",
     company: "GameZone Elite",
     description: "Professional gaming equipment with exclusive CompVerse discounts",
-    image: "/gaming-gear-ad.png",
+    image: "/gaming-gear-ad.jpg",
     link: "#",
     featured: true,
     category: "featured",
@@ -52,7 +52,7 @@ const advertisements: Advertisement[] = [
     title: "Healthy Snacks for Events",
     company: "NutriKids",
     description: "Nutritious snacks to fuel your performance at every event",
-    image: "/healthy-snacks-ad.png",
+    image: "/healthy-snacks-ad.jpg",
     link: "#",
     featured: false,
     category: "sponsor",
@@ -157,9 +157,8 @@ export default function AdvertisementsSection() {
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "bg-[#FFC52C] scale-125" : "bg-[#F6F6F6]/50 hover:bg-[#F6F6F6]/80"
-                }`}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? "bg-[#FFC52C] scale-125" : "bg-[#F6F6F6]/50 hover:bg-[#F6F6F6]/80"
+                  }`}
               />
             ))}
           </div>

@@ -246,10 +246,29 @@ export default function RegistrationSection() {
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[#00AEEF] to-[#FFC52C] text-white font-semibold py-3 text-lg rounded-xl hover-glow"
+                    className="
+    w-full
+    rounded-xl
+    py-3
+    text-lg
+    font-semibold
+    bg-gradient-to-r from-cyan-500 to-blue-400
+    text-white
+    shadow-md
+    transition
+    duration-300
+    ease-in-out
+    hover:shadow-lg
+    hover:brightness-105
+    focus:outline-none
+    focus:ring-4
+    focus:ring-cyan-300/50
+    active:scale-[0.98]
+    "
                   >
                     Continue to Payment
                   </Button>
+
                 </form>
               ) : (
                 <form onSubmit={handlePaymentSubmit} className="space-y-6">
@@ -342,7 +361,7 @@ export default function RegistrationSection() {
                     </Button>
                     <Button
                       type="submit"
-                      className="flex-1 bg-gradient-to-r from-[#00AEEF] to-[#FFC52C] text-white font-semibold py-3 text-lg rounded-xl hover-glow"
+                      className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-400 text-white font-semibold py-3 text-lg rounded-xl hover-glow"
                     >
                       Complete Payment
                     </Button>

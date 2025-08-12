@@ -129,10 +129,31 @@ export default function CalendarSection() {
 
   return (
     <section id="calendar" className="py-20 relative">
-      {/* Background Elements */}
+      {/* Inline CSS for sleek design */}
+      <style jsx>{`
+        .glass {
+          background: rgba(255, 255, 255, 0.08);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .hover-glow:hover {
+          box-shadow: 0 0 20px rgba(0, 194, 255, 0.4);
+          transform: translateY(-4px);
+        }
+        .glow-border {
+          border: 1px solid rgba(0, 194, 255, 0.8);
+          animation: pulseBorder 2s infinite;
+        }
+        @keyframes pulseBorder {
+          0%, 100% { box-shadow: 0 0 5px rgba(0, 194, 255, 0.4); }
+          50% { box-shadow: 0 0 20px rgba(255, 197, 44, 0.6); }
+        }
+      `}</style>
+
+      {/* Background gradient blobs */}
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 right-10 w-64 h-64 bg-gradient-to-br from-[#FFC52C] to-[#00AEEF] rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 left-10 w-48 h-48 bg-gradient-to-br from-[#00AEEF] to-[#FFC52C] rounded-full blur-3xl"></div>
+        <div className="absolute top-20 right-10 w-64 h-64 bg-gradient-to-br from-[#FFC52C] to-[#00AEEF] rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 left-10 w-48 h-48 bg-gradient-to-br from-[#00AEEF] to-[#FFC52C] rounded-full blur-3xl animate-pulse"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -146,21 +167,26 @@ export default function CalendarSection() {
 
         {/* Age Group Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="glass rounded-xl p-2 flex">
+          <div className="glass rounded-xl p-2 flex gap-3">
             {(["Kids", "Adults"] as AgeGroup[]).map((tab) => (
               <Button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-8 py-3 rounded-lg font-semibold transition-all duration-300 ${
-                  activeTab === tab
-                    ? "bg-gradient-to-r from-[#00AEEF] to-[#FFC52C] text-white glow-border"
-                    : "bg-transparent text-[#F6F6F6] hover:text-[#FFC52C]"
-                }`}
+                className={`relative overflow-hidden px-8 py-3 rounded-lg font-medium transition-all duration-300
+        ${activeTab === tab
+                    ? "bg-gradient-to-r from-[#0284c7] to-[#0ea5e9] text-white shadow-md shadow-cyan-500/30"
+                    : "bg-white/10 backdrop-blur-md text-gray-200 hover:text-white border border-transparent hover:border-white/20"
+                  }
+      `}
               >
                 {tab}
+                {activeTab === tab && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-[3px] rounded-full bg-white/80"></span>
+                )}
               </Button>
             ))}
           </div>
+
         </div>
 
         {/* Category Filters */}
@@ -171,11 +197,11 @@ export default function CalendarSection() {
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
                 variant="outline"
-                className={`px-6 py-2 rounded-full border-2 transition-all duration-300 ${
-                  activeFilter === filter
-                    ? "border-[#FFC52C] bg-[#FFC52C] text-[#00367D] font-semibold"
-                    : "border-[#F6F6F6] text-[#F6F6F6] hover:border-[#FFC52C] hover:text-[#FFC52C]"
-                }`}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300
+          ${activeFilter === filter
+                    ? "bg-gradient-to-r from-[#0284c7] to-[#0ea5e9] text-white shadow-md shadow-cyan-500/30"
+                    : "bg-white/5 backdrop-blur-md border border-white/20 text-gray-200 hover:border-cyan-300 hover:text-cyan-800"
+                  }`}
               >
                 {filter}
               </Button>
@@ -183,40 +209,53 @@ export default function CalendarSection() {
           </div>
         </div>
 
+
         {/* Events Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEvents.map((event) => (
             <Card
               key={event.id}
-              className={`glass hover-glow transition-all duration-300 cursor-pointer ${
-                event.isActive ? "glow-border" : ""
-              }`}
+              className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-xl shadow-sm hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-500 ease-out transform hover:-translate-y-1 ${event.isActive ? "border-cyan-400/40" : ""
+                }`}
             >
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start mb-2">
-                  <Badge className={getCategoryColor(event.category)}>{event.category}</Badge>
-                  {event.isActive && <div className="w-3 h-3 bg-[#FFC52C] rounded-full animate-pulse"></div>}
+                  <Badge
+                    className={`${getCategoryColor(event.category)} px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-cyan-500/80 to-blue-500/80 backdrop-blur-sm text-white shadow-md`}
+                  >
+                    {event.category}
+                  </Badge>
+                  {event.isActive && (
+                    <div className="w-3 h-3 bg-cyan-400 rounded-full animate-pulse shadow shadow-cyan-400/50"></div>
+                  )}
                 </div>
-                <CardTitle className="text-white text-lg font-semibold">{event.title}</CardTitle>
+                <CardTitle className="text-white text-lg font-semibold tracking-wide">
+                  {event.title}
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <p className="text-[#F6F6F6] text-sm">{event.description}</p>
 
-                <div className="space-y-2">
-                  <div className="flex items-center text-[#F6F6F6] text-sm">
-                    <Calendar className="w-4 h-4 mr-2 text-[#FFC52C]" />
-                    {new Date(event.date).toLocaleDateString()}
+              <CardContent className="space-y-3">
+                <p className="text-gray-300 text-sm leading-relaxed">{event.description}</p>
+
+                <div className="space-y-2 text-sm text-gray-300">
+                  <div className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-2 text-cyan-400" />
+                    {new Date(event.date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
                   </div>
-                  <div className="flex items-center text-[#F6F6F6] text-sm">
-                    <Clock className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                  <div className="flex items-center">
+                    <Clock className="w-4 h-4 mr-2 text-cyan-400" />
                     {event.time}
                   </div>
-                  <div className="flex items-center text-[#F6F6F6] text-sm">
-                    <MapPin className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                  <div className="flex items-center">
+                    <MapPin className="w-4 h-4 mr-2 text-cyan-400" />
                     {event.location}
                   </div>
-                  <div className="flex items-center text-[#F6F6F6] text-sm">
-                    <Users className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                  <div className="flex items-center">
+                    <Users className="w-4 h-4 mr-2 text-cyan-400" />
                     {event.participants}/{event.maxParticipants} participants
                   </div>
                 </div>
@@ -224,7 +263,10 @@ export default function CalendarSection() {
                 <div className="pt-3">
                   <Button
                     size="sm"
-                    className="w-full bg-gradient-to-r from-[#00AEEF] to-[#FFC52C] text-white font-semibold hover-glow"
+                    className={`w-full py-2.5 rounded-lg font-medium transition-all duration-300 ease-out ${event.isActive
+                      ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-md hover:shadow-lg hover:shadow-cyan-500/40"
+                      : "bg-white/10 backdrop-blur-md border border-white/20 text-gray-200 hover:border-cyan-300 hover:text-white"
+                      }`}
                   >
                     {event.isActive ? "Join Event" : "View Details"}
                   </Button>
@@ -233,6 +275,7 @@ export default function CalendarSection() {
             </Card>
           ))}
         </div>
+
 
         {/* No Events Message */}
         {filteredEvents.length === 0 && (

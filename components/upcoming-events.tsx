@@ -120,25 +120,24 @@ export default function UpcomingEvents() {
           {upcomingEvents.map((event) => (
             <Card
               key={event.id}
-              className={`group relative overflow-hidden rounded-2xl hover-glow transition-all duration-500 cursor-pointer transform hover:scale-105 ${
-                event.featured ? "glow-border" : ""
-              }`}
+              className={`group relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 shadow-sm hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-500 ease-out transform hover:-translate-y-1 ${event.featured ? "border-cyan-400/40" : ""
+                }`}
             >
               {/* Event Image */}
               <div className="relative h-48 overflow-hidden">
                 <img
                   src={event.image || "/placeholder.svg"}
                   alt={event.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                {/* Glassmorphism Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#00367D]/80 via-transparent to-transparent"></div>
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
 
                 {/* Featured Badge */}
                 {event.featured && (
                   <div className="absolute top-4 left-4">
-                    <Badge className="bg-[#FFC52C] text-[#00367D] font-semibold">
+                    <Badge className="bg-gradient-to-r from-yellow-400/90 to-yellow-500/90 text-[#00367D] font-medium shadow-sm backdrop-blur-sm">
                       <Star className="w-3 h-3 mr-1" />
                       Featured
                     </Badge>
@@ -147,33 +146,39 @@ export default function UpcomingEvents() {
 
                 {/* Category Badge */}
                 <div className="absolute top-4 right-4">
-                  <Badge className={getCategoryColor(event.category)}>{event.category}</Badge>
+                  <Badge
+                    className={`px-3 py-1 rounded-full text-xs font-medium shadow-sm backdrop-blur-sm ${getCategoryColor(
+                      event.category
+                    )}`}
+                  >
+                    {event.category}
+                  </Badge>
                 </div>
 
                 {/* Price */}
                 <div className="absolute bottom-4 left-4">
-                  <div className="glass rounded-lg px-3 py-1">
+                  <div className="bg-black/50 backdrop-blur-md rounded-lg px-3 py-1 border border-white/10">
                     <span className="text-white font-semibold">{event.price}</span>
                   </div>
                 </div>
               </div>
 
-              <CardContent className="p-6 glass">
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#FFC52C] transition-colors">
+              <CardContent className="p-6">
+                <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-cyan-300 transition-colors">
                   {event.title}
                 </h3>
 
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-[#F6F6F6] text-sm">
-                    <Calendar className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                <div className="space-y-2 mb-4 text-sm text-gray-300">
+                  <div className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-2 text-cyan-300" />
                     {new Date(event.date).toLocaleDateString()}
                   </div>
-                  <div className="flex items-center text-[#F6F6F6] text-sm">
-                    <Clock className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                  <div className="flex items-center">
+                    <Clock className="w-4 h-4 mr-2 text-cyan-300" />
                     {event.time}
                   </div>
-                  <div className="flex items-center text-[#F6F6F6] text-sm">
-                    <MapPin className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                  <div className="flex items-center">
+                    <MapPin className="w-4 h-4 mr-2 text-cyan-300" />
                     {event.location}
                   </div>
                 </div>
@@ -181,20 +186,21 @@ export default function UpcomingEvents() {
                 <div className="flex gap-3">
                   <Button
                     size="sm"
-                    className="flex-1 bg-[#00AEEF] hover:bg-[#0099D4] text-white font-semibold transition-all duration-300"
+                    className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg hover:shadow-cyan-500/40 transition-all duration-300"
                   >
                     Register
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="flex-1 border-[#FFC52C] text-[#FFC52C] hover:bg-[#FFC52C] hover:text-[#00367D] transition-all duration-300 bg-transparent"
+                    className="flex-1 bg-white/5 backdrop-blur-md border border-white/20 text-gray-200 hover:text-black hover:border-cyan-300 rounded-lg transition-all duration-300"
                   >
                     Learn More
                   </Button>
                 </div>
               </CardContent>
             </Card>
+
           ))}
         </div>
       </div>

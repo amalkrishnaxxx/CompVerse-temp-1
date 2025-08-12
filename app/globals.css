@@ -112,13 +112,11 @@ html {
 }
 
 .spotlight-gradient {
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 215, 0, 0.4) 0%,
-    rgba(0, 212, 255, 0.3) 40%,
-    rgba(26, 41, 81, 0.8) 70%,
-    var(--navy-blue) 100%
-  );
+  background: radial-gradient(circle at center,
+      rgba(255, 215, 0, 0.4) 0%,
+      rgba(0, 212, 255, 0.3) 40%,
+      rgba(26, 41, 81, 0.8) 70%,
+      var(--navy-blue) 100%);
 }
 
 .glow-border-gold {
@@ -244,19 +242,23 @@ html {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0px) translateX(0px) scale(1);
     opacity: 0.6;
   }
+
   25% {
     transform: translateY(-20px) translateX(10px) scale(1.1);
     opacity: 0.8;
   }
+
   50% {
     transform: translateY(-40px) translateX(-5px) scale(0.9);
     opacity: 1;
   }
+
   75% {
     transform: translateY(-20px) translateX(-10px) scale(1.05);
     opacity: 0.7;
@@ -283,10 +285,12 @@ html {
 }
 
 @keyframes gradientShift {
+
   0%,
   100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
@@ -302,20 +306,24 @@ html {
 }
 
 @keyframes pulseGold {
+
   0%,
   100% {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(255, 215, 0, 0.8);
   }
 }
 
 @keyframes pulseCyan {
+
   0%,
   100% {
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
   }
+
   50% {
     box-shadow: 0 0 40px rgba(0, 212, 255, 0.8);
   }
@@ -373,6 +381,7 @@ html {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     background: var(--navy-blue);

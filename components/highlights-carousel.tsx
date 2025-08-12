@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, Play, Award, Users, Calendar } from "lucide-react"
@@ -72,22 +73,34 @@ const highlights: Highlight[] = [
 export default function HighlightsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const startAutoPlay = () => {
+    setIsAutoPlaying(true)
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+  }
+
+  const stopAutoPlay = () => {
+    setIsAutoPlaying(false)
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    timeoutRef.current = setTimeout(() => setIsAutoPlaying(true), 5000)
+  }
 
   useEffect(() => {
     if (!isAutoPlaying) return
-
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % highlights.length)
-    }, 4000)
-
+    }, 5000)
     return () => clearInterval(interval)
   }, [isAutoPlaying])
 
   const nextSlide = () => {
+    stopAutoPlay()
     setCurrentIndex((prev) => (prev + 1) % highlights.length)
   }
 
   const prevSlide = () => {
+    stopAutoPlay()
     setCurrentIndex((prev) => (prev - 1 + highlights.length) % highlights.length)
   }
 
@@ -106,14 +119,14 @@ export default function HighlightsCarousel() {
 
   return (
     <section id="highlights" className="py-20 relative">
-      {/* Background Elements */}
-      <div className="absolute inset-0 opacity-10">
+      {/* Decorative Background */}
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute top-20 left-10 w-80 h-80 bg-gradient-to-br from-[#FFC52C] to-[#00AEEF] rounded-full blur-3xl"></div>
         <div className="absolute bottom-20 right-10 w-64 h-64 bg-gradient-to-br from-[#00AEEF] to-[#FFC52C] rounded-full blur-3xl"></div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        {/* Section Header */}
+        {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-mono">Past Highlights</h2>
           <p className="text-xl text-[#F6F6F6] max-w-2xl mx-auto">
@@ -121,102 +134,139 @@ export default function HighlightsCarousel() {
           </p>
         </div>
 
-        {/* Carousel Container */}
+        {/* Carousel */}
         <div className="relative max-w-6xl mx-auto">
           <div className="overflow-hidden rounded-2xl">
-            <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-              onMouseEnter={() => setIsAutoPlaying(false)}
-              onMouseLeave={() => setIsAutoPlaying(true)}
-            >
-              {highlights.map((highlight) => (
-                <div key={highlight.id} className="w-full flex-shrink-0">
-                  <Card className="glass glow-border hover-glow transition-all duration-500 group">
-                    <div className="relative h-96 overflow-hidden rounded-t-2xl">
-                      <img
-                        src={highlight.image || "/placeholder.svg"}
-                        alt={highlight.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={highlights[currentIndex].id}
+                initial={{ opacity: 0, x: 50 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -50 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                onMouseEnter={stopAutoPlay}
+                onMouseLeave={startAutoPlay}
+              >
+                <Card className="glass glow-border hover-glow transition-all duration-500 group">
+                  <div className="relative h-96 overflow-hidden ">
+                    <motion.img
+                      src={highlights[currentIndex].image || "/placeholder.svg"}
+                      alt={highlights[currentIndex].title}
+                      className="w-full h-full object-cover"
+                      initial={{ scale: 1.05 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 1.2 }}
+                    />
 
-                      {/* Video Play Button */}
-                      {highlight.type === "video" && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Button
-                            size="lg"
-                            className="bg-[#FFC52C]/90 hover:bg-[#FFC52C] text-[#00367D] rounded-full w-16 h-16 p-0 transition-all duration-300 hover:scale-110"
-                          >
-                            <Play className="w-6 h-6 ml-1" />
-                          </Button>
-                        </div>
-                      )}
-
-                      {/* Overlay Gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#00367D]/80 via-transparent to-transparent"></div>
-
-                      {/* Category Badge */}
-                      <div className="absolute top-4 right-4">
-                        <div
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${getCategoryColor(highlight.category)}`}
+                    {highlights[currentIndex].type === "video" && (
+                      <motion.div
+                        className="absolute inset-0 flex items-center justify-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                      >
+                        <Button
+                          size="lg"
+                          aria-label="Play video highlight"
+                          className="group relative flex items-center justify-center w-16 h-16 rounded-full 
+             bg-gradient-to-tr from-[#FFC52C] to-[#FFD85E] text-[#00367D] 
+             shadow-lg shadow-[#FFC52C]/30 
+             transition-all duration-300 ease-out 
+             hover:scale-110 hover:shadow-xl hover:shadow-[#FFC52C]/40"
                         >
-                          {highlight.category}
-                        </div>
+                          <Play className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
+
+                          {/* Subtle pulse animation ring */}
+                          <span className="absolute inset-0 rounded-full border border-[#FFC52C]/50 animate-ping"></span>
+                        </Button>
+
+                      </motion.div>
+                    )}
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#00367D]/85 via-transparent to-transparent"></div>
+
+                    <motion.div
+                      className="absolute top-4 right-4"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <div
+                        className={`px-3 py-1 rounded-full text-sm font-semibold shadow-md ${getCategoryColor(
+                          highlights[currentIndex].category
+                        )}`}
+                      >
+                        {highlights[currentIndex].category}
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  <CardContent className="p-6">
+                    <motion.h3
+                      className="text-2xl font-bold text-white mb-3 group-hover:text-[#FFC52C] transition-colors"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                    >
+                      {highlights[currentIndex].title}
+                    </motion.h3>
+
+                    <motion.p
+                      className="text-[#F6F6F6] mb-4 leading-relaxed"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      {highlights[currentIndex].description}
+                    </motion.p>
+
+                    <div className="flex items-center justify-between text-sm text-[#F6F6F6]">
+                      <div className="flex items-center">
+                        <Calendar className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                        {new Date(highlights[currentIndex].date).toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center">
+                        <Users className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                        {highlights[currentIndex].participants} participants
+                      </div>
+                      <div className="flex items-center">
+                        <Award className="w-4 h-4 mr-2 text-[#FFC52C]" />
+                        Success
                       </div>
                     </div>
-
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-[#FFC52C] transition-colors">
-                        {highlight.title}
-                      </h3>
-
-                      <p className="text-[#F6F6F6] mb-4 leading-relaxed">{highlight.description}</p>
-
-                      <div className="flex items-center justify-between text-sm text-[#F6F6F6]">
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-2 text-[#FFC52C]" />
-                          {new Date(highlight.date).toLocaleDateString()}
-                        </div>
-                        <div className="flex items-center">
-                          <Users className="w-4 h-4 mr-2 text-[#FFC52C]" />
-                          {highlight.participants} participants
-                        </div>
-                        <div className="flex items-center">
-                          <Award className="w-4 h-4 mr-2 text-[#FFC52C]" />
-                          Success
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          {/* Navigation Buttons */}
+          {/* Navigation */}
           <Button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#FFC52C]/90 hover:bg-[#FFC52C] text-[#00367D] rounded-full w-12 h-12 p-0 transition-all duration-300 hover:scale-110"
+            aria-label="Previous highlight"
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[#FFC52C]/90 hover:bg-[#FFC52C] text-[#00367D] rounded-full w-12 h-12 p-0 shadow-lg"
           >
             <ChevronLeft className="w-6 h-6" />
           </Button>
-
           <Button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#FFC52C]/90 hover:bg-[#FFC52C] text-[#00367D] rounded-full w-12 h-12 p-0 transition-all duration-300 hover:scale-110"
+            aria-label="Next highlight"
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#FFC52C]/90 hover:bg-[#FFC52C] text-[#00367D] rounded-full w-12 h-12 p-0 shadow-lg"
           >
             <ChevronRight className="w-6 h-6" />
           </Button>
 
-          {/* Dots Indicator */}
+          {/* Dots */}
           <div className="flex justify-center mt-6 space-x-2">
             {highlights.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "bg-[#FFC52C] scale-125" : "bg-[#F6F6F6]/50 hover:bg-[#F6F6F6]/80"
-                }`}
+                aria-label={`Go to slide ${index + 1}`}
+                onClick={() => {
+                  setCurrentIndex(index)
+                  stopAutoPlay()
+                }}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex ? "bg-[#FFC52C] scale-125" : "bg-[#F6F6F6]/50 hover:bg-[#F6F6F6]/80"
+                  }`}
               />
             ))}
           </div>
